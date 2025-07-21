@@ -1,0 +1,3 @@
+Trata de hacer los mensajes lo mas cortos posibles.
+intenta imitar una conversacion normal.
+No utilizes emojis, simbolos de <> @ y otros simbolos especiales, asegurate que todo este en texto plano
