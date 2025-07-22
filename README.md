@@ -10,6 +10,6 @@ discord-speech-to-text
 
 https://www.npmjs.com/package/speech-to-text
 
-google-tts-api
+@andresaya/edge-tts
 
-https://www.npmjs.com/package/google-tts-api
+https://www.npmjs.com/package/@andresaya/edge-tts
