@@ -1,10 +1,16 @@
 # AI-for-discord
 Una integracion de Ollama AI y Meta Wit.ai con discord
 
-Requiere el uso de node.js y discord.js
-
 
 Librerias
+
+node.js
+
+https://nodejs.org/es
+
+discord.js
+
+https://discord.js.org
 
 discord-speech-to-text
 
