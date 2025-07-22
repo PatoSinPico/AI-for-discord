@@ -143,10 +143,10 @@ if(IsInVoice){
 }
 async function EntrarEnVoiceChat() {
 
-    const currentguild = await client.guilds.fetch("1020697652402339890");
+    const currentguild = await client.guilds.fetch("ID DEL SERVIDOR");
     const connection = voice.joinVoiceChannel({
-	   channelId: "1396809396503318538",
-	   guildId: "1020697652402339890",
+	   channelId: "ID DEL CANAL AL QUE UNIRSE",
+	   guildId: "ID DEL SERVIDOR",
 	   adapterCreator: currentguild.voiceAdapterCreator,
      selfDeaf: false
     });
@@ -232,7 +232,7 @@ client.on("messageCreate", async message =>{
 
        
      
-     if(!message.author.bot && message.mentions.has(client.user) && message.author.id == "1020696671287513159" && !IsInVoice){
+     if(!message.author.bot && message.mentions.has(client.user) && !IsInVoice){
 
         
    
@@ -293,7 +293,7 @@ client.on("messageCreate", async message =>{
         
       
       const contenido = respuesta.response || "No sé qué decirte, bro.";
-      contenido.replace("/tts", "") && contenido.replace("/voice", "")  && contenido.replace("<@1378097438610686002>", "")|| "",
+      contenido.replace("/tts", "") && contenido.replace("/voice", "")  && contenido.replace("<@ID DEL BOT>", "")|| "", //Se reemplaza el id del bot porque aveces decide tratar de mencionarse a si mismo.
       ActualizarMemoriaGeneral(message.content, message.author.username + " te dijo: ")
       ActualizarMemoriaGeneral(contenido, " Tu dijisites: ")
      
@@ -369,7 +369,7 @@ async function  TalkToAI(mensaje, autor ) {
         
       
       const contenido = respuesta.response || "No sé qué decirte, bro.";
-      contenido.replace("/tts", "") && contenido.replace("/voice", "")  && contenido.replace("<@1378097438610686002>", "")|| "",
+      contenido.replace("/tts", "") && contenido.replace("/voice", "")  && contenido.replace("<@ID DEL BOT>", "")|| "",
       ActualizarMemoriaGeneral(mensaje, autor + " te dijo: ")
       ActualizarMemoriaGeneral(contenido, " Tu dijisites: ")
      
