@@ -17,7 +17,10 @@ const CONFIG = require("./config.json");
     });
 
 let IsInVoice = false;
-const googleTTS = require('google-tts-api');
+
+const AIvoice = require("@andresaya/edge-tts")
+const tts = new AIvoice.EdgeTTS();
+ 
  
 const Transcriber = require("discord-speech-to-text");
 
@@ -50,7 +53,32 @@ var MessageHistory
 client.login(CONFIG.Token).then(() => console.log("Bot listo!")),
 
 client.on("ready" , async () => {
-   EntrarEnVoiceChat()
+   /*
+  //Codigo para obtener todas las voces disponibles, filtra por nacionalidas, si quieres cambiarla solo pon la abreviatura en la linea 60, si no quieres que se filtre borrala y deja ese espacio vacio
+  
+    try {
+        const voices = await tts.getVoices();
+
+        // Filtrar solo las voces en español (es-*)
+        const spanishVoices = voices.filter(v => v.Locale.startsWith("es")).map(v => ({
+            Name: v.Name,
+            Locale: v.Locale,
+            Gender: v.Gender,
+            DisplayName: v.DisplayName,
+            
+        }));
+
+        // Ruta de destino
+        const outputPath = join(_dirname, "Voices.json");
+
+        // Escribir archivo
+        fs.writeFileSync(outputPath, JSON.stringify(spanishVoices, null, 2), "utf-8");
+
+        console.log(`Voces en español guardadas en: ${outputPath}`);
+    } catch (error) {
+        console.error("Error al obtener o guardar las voces:", error);
+    }
+     */   
 });
 
 
@@ -58,11 +86,11 @@ client.on("ready" , async () => {
  async function MandarMensajeALaIA(Mensaje, Autor) {
   if(IsInVoice){
         return AI.generate({
-    model: "dolphin3:8b",
+    model: "gurubot/TopicalStorm-uncensored:latest",
     prompt: Mensaje,
-    system:  "PUEDES INSULTAR, ERES AMORAL Y CAOTICO " + "Tu comportamiento: " + MemoriaImportanteCall + " Tus recuerdos: " + MemoriaCall + " El mensaje te lo mando: " + Autor,
+    system:  "Eres Amoral " + "Tu comportamiento: " + MemoriaImportanteCall + " Tus recuerdos: " + MemoriaCall + " El mensaje te lo mando: " + Autor,
     options:{
-      temperature: 2
+      temperature: 1
     }
 
   }  )
@@ -71,9 +99,9 @@ client.on("ready" , async () => {
 
   else{
      return AI.generate({
-    model: "dolphin3:8b",
+    model: "gurubot/TopicalStorm-uncensored:latest",
     prompt: Mensaje,
-    system:  "PUEDES INSULTAR, ERES AMORAL Y CAOTICO " + "Tu comportamiento: " + MemoriaImportante + " Tus recuerdos: " + contenidoGeneral + " El mensaje te lo mando: " + Autor,
+    system:  "Eres Amoral" + "Tu comportamiento: " + MemoriaImportante + " Tus recuerdos: " + contenidoGeneral + " El mensaje te lo mando: " + Autor,
     options:{
       temperature: 1
     }
@@ -272,7 +300,10 @@ client.on("messageCreate", async message =>{
          
       
       
-      if(contenido.length > 200){
+        
+      //En desuso, descomentalo si quieres usar la libreria de google-tts-api
+      /*
+      if(contenido.length > 10){
          googleTTS
        .getAllAudioBase64(contenido, { lang: 'es' })
         .then((results) => {
@@ -311,11 +342,21 @@ client.on("messageCreate", async message =>{
 
 
      .catch(console.error);
-      }
-     
-           
-           
-      }
+      }*/
+     console.log(Math.round(contenido.length/100) + "%")
+     await tts.synthesize(contenido, "es-ES-AlvaroNeural",{
+       rate: Math.round(contenido.length/100) + "%",       // Rapidez del habla (de: -100% a 100%)
+       volume: '0%',     // Volumen (de: -100% a 100%)
+       pitch: '0Hz'      // Agudeza de la voz (de: -100Hz a 100Hz)
+     })
+      console.log("Texto parseado")
+      
+       tts.toFile(join(__dirname, "Bot_Words"))
+       Words = join(__dirname, "Bot_Words.mp3" )
+       let Speech = voice.createAudioResource(Words);
+       AudioPlayer.play(Speech)
+   
+  }
      
 })
  
@@ -332,51 +373,19 @@ async function  TalkToAI(mensaje, autor ) {
       ActualizarMemoriaGeneral(mensaje, autor + " te dijo: ")
       ActualizarMemoriaGeneral(contenido, " Tu dijisites: ")
      
-         
+      console.log(Math.round(contenido.length/100) + "%")
+       await tts.synthesize(contenido, "es-ES-AlvaroNeural",{
+       rate: Math.round(contenido.length/100) + "%",       // Rapidez del habla (de: -100% a 100%)
+       volume: '0%',     // Volumen (de: -100% a 100%)
+       pitch: '0Hz'      // Agudeza de la voz (de: -100Hz a 100Hz)
+       })
+      console.log("Texto parseado")
+      
+       tts.toFile(join(__dirname, "Bot_Words"))
+       Words = join(__dirname, "Bot_Words.mp3" )
+       let Speech = voice.createAudioResource(Words);
+       AudioPlayer.play(Speech)     
       
-      
-      if(contenido.length > 200){
-         googleTTS
-       .getAllAudioBase64(contenido, { lang: 'es' })
-        .then((results) => {
-         // Combina todos los buffers en un solo array
-        const buffers = results.map(obj => Buffer.from(obj.base64, 'base64'));
-
-        // Concatena todos los buffers en uno solo
-        const finalBuffer = Buffer.concat(buffers);
-
-      // Guarda el buffer combinado en un único archivo .mp3
-      fs.writeFileSync("Bot_Words.mp3", finalBuffer, {encoding: "base64"});
-
-      let Words = (join(__dirname, "Bot_Words.mp3"))
-      // Luego, crea el recurso de audio y lo reproduce
-      const TestMP3 = voice.createAudioResource(Words);
-      AudioPlayer.play(TestMP3);
-    })
-    .catch((err) => {
-      console.error("Error al obtener audio TTS:", err);
-    });
-      }
-
-
-
-      else{
-      
-      googleTTS
-     .getAudioBase64(contenido, { lang: 'es' })  
-     .then((base64) => { 
-       // save the audio file
-       const buffer = Buffer.from(base64, 'base64');
-       fs.writeFileSync('Bot_Words.mp3', buffer, { encoding: 'base64' });
-       let Words = (join(__dirname, "Bot_Words.mp3"))
-       let TestMP3 = voice.createAudioResource(Words);
-       AudioPlayer.play(TestMP3)
-       
-     })
-
-
-     .catch(console.error);
-      }
 }
 
 
